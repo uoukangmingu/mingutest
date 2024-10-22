@@ -1,5 +1,4 @@
-﻿// 문제 데이터
-const multipleChoiceQuestions = [
+﻿const multipleChoiceQuestions = [
     { question: "가족의 기본적인 기능 중 하나는 무엇인가?", choices: ["A) 오락 제공", "B) 사회화", "C) 여행 계획", "D) 친구 소개"], answer: 1 },
     { question: "현대 사회에서 가족의 형태는 어떻게 변화하고 있는가?", choices: ["A) 핵가족 증가", "B) 단일 부모 가정 증가", "C) 결혼하지 않은 커플 증가", "D) 모두 해당"], answer: 3 },
     { question: "가족의 법적 정의는 무엇인가?", choices: ["A) 서로 좋아하는 사람들", "B) 결혼한 남녀와 자녀", "C) 혈연 또는 법적으로 연결된 사람들", "D) 같은 지역에 사는 사람들"], answer: 2 },
@@ -187,12 +186,21 @@ function checkAnswer(selectedAnswer) {
     const question = allQuestions[currentQuestionIndex];
     let isCorrect = false;
 
+    // 객관식 문제 정답 확인
     if (currentQuestionType === "multiple" && selectedAnswer === question.answer) {
         isCorrect = true;
-    } else if (currentQuestionType === "ox" && selectedAnswer === question.answer) {
+    } 
+    // OX 문제 정답 확인
+    else if (currentQuestionType === "ox" && selectedAnswer === question.answer) {
         isCorrect = true;
-    } else if (currentQuestionType === "subjective" && selectedAnswer.toLowerCase() === question.answer.toLowerCase()) {
-        isCorrect = true;
+    } 
+    // 주관식 문제 정답 확인 (띄어쓰기 무시)
+    else if (currentQuestionType === "subjective") {
+        const userAnswerProcessed = selectedAnswer.replace(/\s+/g, '').toLowerCase();  // 사용자 답변에서 모든 공백 제거
+        const correctAnswerProcessed = question.answer.replace(/\s+/g, '').toLowerCase();  // 정답에서도 모든 공백 제거
+        if (userAnswerProcessed === correctAnswerProcessed) {
+            isCorrect = true;
+        }
     }
 
     // 사용자가 틀린 문제는 wrongQuestions 배열에 추가하고, 답을 기록
@@ -209,6 +217,7 @@ function checkAnswer(selectedAnswer) {
 
     nextQuestion();
 }
+
 
 // 다음 문제로 넘어감
 function nextQuestion() {
@@ -241,6 +250,10 @@ function showResult() {
     
     // resultBox 내의 기존 내용을 덮어쓰지 않고, 오답 노트만 추가
 }
+// 다시 시작하기 버튼 클릭 시 페이지 새로고침
+document.getElementById("restart").onclick = function () {
+    window.location.reload();  // 페이지를 새로고침하여 퀴즈를 처음부터 다시 시작
+};
 
 
 // 틀린 문제 다시 풀기
